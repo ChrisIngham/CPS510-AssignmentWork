@@ -9,84 +9,48 @@ CREATE TABLE first_user(
     lastName VARCHAR2 (50 CHAR)
 );
 
-insert into first_user values (506748,1,'Jack','Smith');
-insert into first_user values (123456,1,'Justin','Bieb');
-insert into first_user values (506749,3,'Emily','Ilis');
-insert into first_user values (903945,2,'Josephina','Beck');
-insert into first_user values (127381,1,'Joseph','Beckham');
-insert into first_user values (903940,1,'Brandy','Melville');
-insert into first_user values (903945,1,'Barack','Obama');
-insert into first_user values (903949,1,'Prince','Jackson');
-insert into first_user values (783039,2, 'Jelena', 'Misic');
-insert into first_user values (283923,2, 'Abdol', 'Abhari');
-insert into first_user values (412938,2, 'Isaac', 'Woungang');
 /*
 Has courseID that is used in many methods
 Has permissions that need to be met by TA and Prof permissions to be able teach
 */
-
-
 CREATE TABLE Course(
-    courseID NUMBER CHECK (courseID BETWEEN 100 AND 9999),
+    courseID NUMBER PRIMARY KEY NOT NULL,
     taPermissionCourse NUMBER NOT NULL,
     professorPermissionCourse NUMBER NOT NULL,
     courseName VARCHAR2 (50 CHAR)
 );
 
-insert into Course values (501, 123, 506, 'Database Systems');
-insert into Course values (633, 321, 605, 'Computer Security');
-insert into Course values (420, 213, 650, 'Discrete Structures');
+/*
+Has a ID
+has userId that can be accessed to see name
+*/
+CREATE TABLE Student(
+    studentID NUMBER PRIMARY KEY,
+    userID NUMBER,
+    FOREIGN KEY (userID) REFERENCES first_user(userID)
+);
+
 
 /*
 Has a ID
 has userId that can be accessed to see name
 */
-
-
-
-CREATE TABLE Student(
-    studentID NUMBER UNIQUE PRIMARY KEY,
-    userID NUMBER,
-    FOREIGN KEY (userID) REFERENCES first_user(userID)
-);
-ALTER TABLE Student
-    Add StudentName VARCHAR2 (100 CHAR);
-
-insert into Student values (123456,506748,'Jack Smith');
-insert into Student values (12323490,903949,'Prince Jackson');
-
-
-/*
-Has a ID 
-has userId that can be accessed to see name
-*/
 CREATE TABLE Professor(
-    professorID NUMBER UNIQUE PRIMARY KEY,
+    professorID NUMBER PRIMARY KEY,
     userID NUMBER,
     FOREIGN KEY (userID) REFERENCES first_user(userID)
 );
-ALTER TABLE Professor
-    Add ProfessorName VARCHAR2 (100 CHAR);
 
-
-insert into Professor values (12,903945,'Josephina Beck');
-insert into Professor values (13, 783039,'Jelena Misic');
-insert into Professor values (14,283923,'Abdol Abhari');
-insert into Professor values (15,412938,'Isaac Woungang');
 /*
 Has a ID
 has userId that can be accessed to see name
 */
 
 CREATE TABLE TA(
-    taID NUMBER UNIQUE PRIMARY KEY,
+    taID NUMBER PRIMARY KEY,
     userID NUMBER,
     FOREIGN KEY (userID) REFERENCES first_user(userID)
 );
-ALTER TABLE TA
-    Add TAName VARCHAR2 (100 CHAR);
-
-insert into TA values (7, 506749, 'Emily Ilis');
 
 /*
 Permission has two seperate keys, ta permissions and prof permissions
@@ -205,7 +169,7 @@ CREATE TABLE Discussion_Board(
     courseID NUMBER NOT NULL,
     FOREIGN KEY (courseID) REFERENCES Course(courseID),
     assignmentID NUMBER,
-    FOREIGN KEY (assignmentID) REFERENCES Assignments(assignmentID)
+    FOREIGN KEY (assignmentID) REFERENCES Assignments(assignmentID) ON DELETE CASCADE
 );
 
 /*
@@ -224,8 +188,6 @@ CREATE TABLE Course_Offerings(
     courseID NUMBER NOT NULL,
     FOREIGN KEY (courseID) REFERENCES Course(courseID)
 );
-insert into Course_Offering values ('Winter','Undergraduate','Database Systems','Computer Science',14,
-7,501);
 
 
 CREATE TABLE enrolled (
@@ -234,14 +196,6 @@ CREATE TABLE enrolled (
     studentID NUMBER,
     FOREIGN KEY (studentID) REFERENCES Student(studentID)
 );
-
-ALTER TABLE enrolled 
-    add name VARCHAR2 (50 CHAR);
-
-insert into enrolled values (501,123456,'jack smith');
-insert into enrolled values (633,12323490,'prince jackson');
-
-
 
 CREATE TABLE checks (
     courseID NUMBER NOT NULL,
@@ -256,15 +210,3 @@ CREATE TABLE creates (
     courseID NUMBER NOT NULL,
     FOREIGN KEY (courseID) REFERENCES Course(courseID)
 );
-
-
-
-
-SELECT name, courseID, studentID 
-FROM enrolled
-ORDER BY name, courseID DESC, studentID ASC;
-
-
-
-
-
